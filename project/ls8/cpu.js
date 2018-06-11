@@ -54,9 +54,23 @@ class CPU {
      */
     alu(op, regA, regB) {
         switch (op) {
+            case "ADD":
+                this.reg[regA] += this.reg[regB];
+            case "AND":
+
+            case "SUB":
+                return regA - regB;
             case 'MUL':
-                // !!! IMPLEMENT ME
+                return regA * regB;
+            case "DIV":
+                return regA / regB;
+            case "INC":
+                break; 
+            case "DEC":
                 break;
+            case "CMP":
+                if (regA > regB) return 0;
+                if (regA <= regB) return 1;
         }
     }
 
@@ -69,20 +83,22 @@ class CPU {
         // index into memory of the instruction that's about to be executed
         // right now.)
 
-        // !!! IMPLEMENT ME
+        // IR: Instruction Register, contains a copy of the currently executing instruction
+        const IR = this.ram.read(this.PC);
 
         // Debugging output
-        //console.log(`${this.PC}: ${IR.toString(2)}`);
+        // console.log(`${this.PC}: ${IR.toString(2)}`);
 
         // Get the two bytes in memory _after_ the PC in case the instruction
         // needs them.
 
-        // !!! IMPLEMENT ME
+        const regA = this.ram.read(this.PC + 1);
+        const regB = this.ram.read(this.PC + 2);
 
         // Execute the instruction. Perform the actions for the instruction as
         // outlined in the LS-8 spec.
 
-        // !!! IMPLEMENT ME
+        this.alu(IR, regA, regB);
 
         // Increment the PC register to go to the next instruction. Instructions
         // can be 1, 2, or 3 bytes long. Hint: the high 2 bits of the
