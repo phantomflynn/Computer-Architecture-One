@@ -98,14 +98,45 @@ class CPU {
         // Execute the instruction. Perform the actions for the instruction as
         // outlined in the LS-8 spec.
 
-        this.alu(IR, regA, regB);
+        switch(IR) {
+            case "ADD":
+                this.poke(regA, regA + regB);
+                break;
+            case "AND": // 10110011
+                this.poke(regA, regA & regB);
+                break;
+            case "CALL": // 01001000
+                // come back to me
+            case "CMP": // 10100000 - compare
+                if (regA === regB) this.poke(regA, "00000001");
+                if (regA < regB) this.poke(regA, "00000100");
+                if (regA > regB) this.poke(regA, "00000010");
+                break;
+            case "DEC": // 01111001
+                this.poke(regA, regA - 1);
+                break;
+            case "DIV": // 10101011
+                if (regB === 0) this.stopClock();
+                else { this.poke(regA, regA / regB) }
+                break;
+            case "HLT": // 00000001 - halt machine
+                this.stopClock();
+                break;
+            case "INC": // 01111000 - increment
+                this.poke(regA, regA + 1);
+                break;
+            // case "INT": // 01001010
+            // default: this.stopClock();
+            
+        }
+
 
         // Increment the PC register to go to the next instruction. Instructions
         // can be 1, 2, or 3 bytes long. Hint: the high 2 bits of the
         // instruction byte tells you how many bytes follow the instruction byte
         // for any particular instruction.
         
-        // !!! IMPLEMENT ME
+        this.PC === 255 ? this.PC = 0 : this.PC++
     }
 }
 
