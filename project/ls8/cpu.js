@@ -89,6 +89,9 @@ class CPU {
             case "DEC":
                 this.reg[regA] -= 1;
                 break;
+            default:
+                console.log("ERROR: something went wrong within the ALU switch/case.");
+                this.stopClock();
         }
     }
 
