@@ -74,7 +74,8 @@ class CPU {
                 this.reg[regA] *= this.reg[regB];
                 break;
             case "DIV":
-                this.reg[regA] /= this.reg[regB];
+                if (this.reg[regB] === 0) this.stopClock();
+                else this.reg[regA] /= this.reg[regB];
                 break;
             case "ADD":
                 this.reg[regA] += this.reg[regB];
