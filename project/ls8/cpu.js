@@ -1,11 +1,36 @@
 /* LS-8 v2.0 emulator skeleton code */
 
-const instruction = {
-    HLT: 0b00000001,
-    PRN: 0b01000011,
-    LDI: 0b10011001, // load register immediate - set value of register to int
-    MUL: 0b10101010, // multiply
-}
+const HLT = 0b00000001,
+      PRN = 0b01000011,
+      LDI = 0b10011001, // load register immediate - set value of register to int
+      MUL = 0b10101010, // multiply
+      ADD = 0b10101000,
+      AND = 0b10110011,
+      CALL= 0b01001000,
+      CMP = 0b10100000,
+      DEC = 0b01111001,
+      DIV = 0b10101011,
+      INC = 0b01111000,
+      INT = 0b01001010,
+      IRET= 0b00001011,
+      JEQ = 0b01010001,
+      JGT = 0b01010100,
+      JLT = 0b01010011,
+      JMP = 0b01010000,
+      JNE = 0b01010010,
+       LD = 0b10011000,
+      MOD = 0b10101100,
+      NOP = 0b00000000,
+      NOT = 0b01110000,
+       OR = 0b10110001,
+      POP = 0b01001100,
+      PRA = 0b01000010,
+      PUSH= 0b01001101,
+      RET = 0b00001001,
+       ST = 0b10011010,
+      SUB = 0b10101001,
+      XOR = 0b10110010;
+
 
 /* Class for simulating a simple Computer (CPU & memory) */
 class CPU {
@@ -70,16 +95,16 @@ class CPU {
         // outlined in the LS-8 spec.
 
         switch(IR) {
-            case instruction.LDI: 
+            case LDI: 
                 this.reg[operandA] = operandB;
                 break;
-            case instruction.PRN:
+            case PRN:
                 console.log(this.reg[operandA]);
                 break;
-            case instruction.HLT:
+            case HLT:
                 this.stopClock();
                 break;
-            case instruction.MUL:
+            case MUL:
                 this.alu("MUL", operandA, operandB);
                 break;
             default:

@@ -7,8 +7,7 @@ const cpu = new CPU(ram);
 /* READ FILE AND FILTER OUT NOISE */
 const fs = require("fs");
 
-const argv = process.argv.slice(2);
-const filename = argv[0];
+const filename = process.argv[2];
 
 const filedata = fs.readFileSync(filename, "utf8").split(/[\r\n]+/g);
 
