@@ -73,6 +73,21 @@ class CPU {
             case "MUL":
                 this.reg[regA] *= this.reg[regB];
                 break;
+            case "DIV":
+                this.reg[regA] /= this.reg[regB];
+                break;
+            case "ADD":
+                this.reg[regA] += this.reg[regB];
+                break;
+            case "SUB": 
+                this.reg[regA] -= this.reg[regB];
+                break;
+            case "INC":
+                this.reg[regA] += 1;
+                break;
+            case "DEC":
+                this.reg[regA] -= 1;
+                break;
         }
     }
 
@@ -106,6 +121,21 @@ class CPU {
                 break;
             case MUL:
                 this.alu("MUL", operandA, operandB);
+                break;
+            case DIV:
+                this.alu("DIV", operandA, operandB);
+                break;
+            case ADD:
+                this.alu("ADD", operandA, operandB);
+                break;
+            case SUB:
+                this.alu("SUB", operandA, operandB);
+                break;
+            case INC:
+                this.alu("INC", operandA);
+                break;
+            case DEC:
+                this.alu("DEC", operandA);
                 break;
             default:
                 this.stopClock();
