@@ -25,9 +25,7 @@ function loadMemory() {
     }
 }
 
-/**
- * Main
- */
+/* Main */
 
 let ram = new RAM(256);
 let cpu = new CPU(ram);
