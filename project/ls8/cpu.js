@@ -40,6 +40,7 @@ class CPU {
         this.ram = ram;
         this.reg = new Array(8).fill(0); // General-purpose registers - R0-R7
         this.PC = 0; // Special-purpose registers // Program Counter
+        this.SP = 7;
     }
     
     /* Store a byte of data in the memory address, useful for program loading */
@@ -65,8 +66,6 @@ class CPU {
      *
      * If you have an instruction that does math, i.e. MUL, the CPU would hand
      * it off to it's internal ALU component to do the actual work.
-     *
-     * op can be: ADD SUB MUL DIV INC DEC CMP
      */
     alu(op, regA, regB) {
         switch (op) {
@@ -104,6 +103,7 @@ class CPU {
 
         // IR: Instruction Register, contains a copy of the currently executing instruction
         const IR = this.ram.read(this.PC);
+        const SP = this.ram.read(this.SP);
         // console.log(`${this.PC}: ${IR.toString(2)}`);
 
         // Get the two bytes in memory _after_ the PC in case the instruction needs them.
@@ -122,6 +122,14 @@ class CPU {
                 break;
             case HLT:
                 this.stopClock();
+                break;
+            case POP:
+                this.reg[operandA] = this.reg[this.SP];
+                this.SP++;
+                break;
+            case PUSH:
+                this.SP--;
+                this.reg[this.SP] = this.reg[operandA];
                 break;
             case MUL:
                 this.alu("MUL", operandA, operandB);

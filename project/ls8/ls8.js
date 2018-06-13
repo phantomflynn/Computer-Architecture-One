@@ -1,3 +1,4 @@
+const fs = require("fs");
 const RAM = require('./ram');
 const CPU = require('./cpu');
 
@@ -5,8 +6,6 @@ const ram = new RAM(256);
 const cpu = new CPU(ram);
 
 /* READ FILE AND FILTER OUT NOISE */
-const fs = require("fs");
-
 const filename = process.argv[2];
 
 const filedata = fs.readFileSync(filename, "utf8").split(/[\r\n]+/g);
