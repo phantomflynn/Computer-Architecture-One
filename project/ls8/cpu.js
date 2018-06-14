@@ -18,19 +18,20 @@ const HLT = 0b00000001,
       JLT = 0b01010011,
       JMP = 0b01010000,
       JNE = 0b01010010,
-       LD = 0b10011000,
+      LD  = 0b10011000,
       MOD = 0b10101100,
       NOP = 0b00000000,
       NOT = 0b01110000,
-       OR = 0b10110001,
+      OR  = 0b10110001,
       POP = 0b01001100,
       PRA = 0b01000010,
       PUSH= 0b01001101,
       RET = 0b00001001,
-       ST = 0b10011010,
+      ST  = 0b10011010,
       SUB = 0b10101001,
       XOR = 0b10110010;
 
+const SP = 7;
 
 /* Class for simulating a simple Computer (CPU & memory) */
 class CPU {
@@ -40,7 +41,7 @@ class CPU {
         this.ram = ram;
         this.reg = new Array(8).fill(0); // General-purpose registers - R0-R7
         this.PC = 0; // Special-purpose registers // Program Counter
-        this.SP = 7;
+        this.reg[SP] = 0xF4; // stores the address of the stack (most recently pushed item) in ram
     }
     
     /* Store a byte of data in the memory address, useful for program loading */
@@ -96,6 +97,7 @@ class CPU {
 
     /* Advances the CPU one cycle */
     tick() {
+        let increment = true;
         // Load the instruction register (IR--can just be a local variable here)
         // from the memory address pointed to by the PC. (I.e. the PC holds the
         // index into memory of the instruction that's about to be executed
@@ -103,7 +105,6 @@ class CPU {
 
         // IR: Instruction Register, contains a copy of the currently executing instruction
         const IR = this.ram.read(this.PC);
-        const SP = this.ram.read(this.SP);
         // console.log(`${this.PC}: ${IR.toString(2)}`);
 
         // Get the two bytes in memory _after_ the PC in case the instruction needs them.
@@ -117,38 +118,62 @@ class CPU {
             case LDI: 
                 this.reg[operandA] = operandB;
                 break;
+
             case PRN:
                 console.log(this.reg[operandA]);
                 break;
+
             case HLT:
                 this.stopClock();
                 break;
+
             case POP:
-                this.reg[operandA] = this.reg[this.SP];
-                this.SP++;
+                this.reg[operandA] = this.ram.read(this.reg[SP]);
+                this.reg[SP]++; // moves the pointer to the stack in memory up one
                 break;
+
             case PUSH:
-                this.SP--;
-                this.reg[this.SP] = this.reg[operandA];
+                this.reg[SP]--; // moves the pointer to the stack in memory down one
+                this.ram.write(this.reg[SP], this.reg[operandA]);
                 break;
+
+            case CALL:
+                this.reg[SP]--;
+                this.ram.write(this.reg[SP], this.PC + 2);
+                this.PC = this.reg[operandA];
+                increment = false;
+                break;
+                
+            case RET:
+                this.PC = this.ram.read(this.reg[SP]);
+                this.reg[SP]++;
+                increment = false;
+                break;
+
             case MUL:
                 this.alu("MUL", operandA, operandB);
                 break;
+                
             case DIV:
                 this.alu("DIV", operandA, operandB);
                 break;
+                
             case ADD:
                 this.alu("ADD", operandA, operandB);
                 break;
+                
             case SUB:
                 this.alu("SUB", operandA, operandB);
                 break;
+                
             case INC:
                 this.alu("INC", operandA);
                 break;
+                
             case DEC:
                 this.alu("DEC", operandA);
                 break;
+                
             default:
                 this.stopClock();
                 console.log('error');
@@ -158,8 +183,8 @@ class CPU {
         // can be 1, 2, or 3 bytes long. Hint: the high 2 bits of the
         // instruction byte tells you how many bytes follow the instruction byte
         // for any particular instruction.
-        
-        this.PC += (IR >> 6) + 1;
+
+        if (increment) this.PC += (IR >> 6) + 1;
     }
 }
 
