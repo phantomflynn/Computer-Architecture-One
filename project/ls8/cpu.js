@@ -148,30 +148,34 @@ class CPU {
                 noIncrement = true;
                 break;
 
+            case ST:
+                this.poke(this.reg[operandA], this.reg[operandB]);
+                break;
+
             case MUL:
                 this.alu("MUL", operandA, operandB);
                 break;
-                
+
             case DIV:
                 this.alu("DIV", operandA, operandB);
                 break;
-                
+
             case ADD:
                 this.alu("ADD", operandA, operandB);
                 break;
-                
+
             case SUB:
                 this.alu("SUB", operandA, operandB);
                 break;
-                
+
             case INC:
                 this.alu("INC", operandA);
                 break;
-                
+
             case DEC:
                 this.alu("DEC", operandA);
                 break;
-                
+
             default:
                 this.stopClock();
                 console.log('error');
