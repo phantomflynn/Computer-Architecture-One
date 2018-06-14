@@ -32,6 +32,8 @@ const HLT = 0b00000001,
       XOR = 0b10110010;
 
 const SP = 7;
+const IS = 6;
+const IM = 5;
 
 /* Class for simulating a simple Computer (CPU & memory) */
 class CPU {
@@ -53,11 +55,19 @@ class CPU {
     startClock() {
         this.clock = setInterval(() => { this.tick() }, 1); 
         // 1 ms delay == 1 KHz clock == 0.000001 GHz
+
+        // 
+        this.interrupt = setInterval(() => this.reg[IS] |= 1, 1000);
     }
 
     /* Stops the clock */
     stopClock() {
         clearInterval(this.clock);
+        clearInterval(this.interrupt);
+    }
+
+    handleIRET() {
+
     }
 
     /*
@@ -97,7 +107,20 @@ class CPU {
 
     /* Advances the CPU one cycle */
     tick() {
-        let increment = true;
+        // CHECK FOR INTERRUPTS
+        let interrupts = this.reg[IM] & this.reg[IS];
+
+        for (i = 0; i < 8; i++) {
+            
+        }
+
+        // IF INTERRUPT IS ENABLED
+            // APPLY INTERRUPT MASK
+            // IF INTERRUPT OCCURRED ...
+                // SAVE ALL WORK ON THE STACK
+                // DISABLE INTERRUPT
+                // SET PC TO THE INTERRUPT HANDLER ADDRESS
+        
         // Load the instruction register (IR--can just be a local variable here)
         // from the memory address pointed to by the PC. (I.e. the PC holds the
         // index into memory of the instruction that's about to be executed
@@ -141,13 +164,27 @@ class CPU {
                 this.reg[SP]--;
                 this.ram.write(this.reg[SP], this.PC + 2);
                 this.PC = this.reg[operandA];
-                increment = false;
                 break;
                 
             case RET:
                 this.PC = this.ram.read(this.reg[SP]);
                 this.reg[SP]++;
-                increment = false;
+                break;
+
+            case ST:
+                this.ram.write(this.reg[operandA], this.reg[operandB]);
+                break;
+
+            case JMP:
+                this.PC = this.reg[operandA];
+                break;
+
+            case PRA:
+                console.log(String.fromCharCode(this.reg[operandA]));
+                break;
+
+            case IRET:
+                this.handleIRET();
                 break;
 
             case MUL:
@@ -184,7 +221,7 @@ class CPU {
         // instruction byte tells you how many bytes follow the instruction byte
         // for any particular instruction.
 
-        if (increment) this.PC += (IR >> 6) + 1;
+        IR !== CALL && IR !== RET && IR !== JMP ? this.PC += (IR >> 6) + 1 : null;
     }
 }
 
